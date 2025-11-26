@@ -1,6 +1,6 @@
 [submodule "src/LIO-EKF"]
 	path = src/LIO-EKF
-	url = https://github.com/YibinWu/LIO-EKF.git
+	url = https://github.com/MapsHD/LIO-EKF.git
 [submodule "src/lio-ekf-to-hdmapping/src/3rdparty/LASzip"]
 	path = src/lio-ekf-to-hdmapping/src/3rdparty/LASzip
 	url = https://github.com/LASzip/LASzip.git

@@ -1,134 +1,81 @@
-# [LIO-EKF](https://github.com/YibinWu/LIO-EKF) converter to [HDMapping](https://github.com/MapsHD/HDMapping)
+# LIO-EKF to HDMapping simlified instruction
 
-## Hint
+## Step 1 (prepare data)
+Download the dataset `reg-1.bag` by clicking [link](https://cloud.cylab.be/public.php/dav/files/7PgyjbM2CBcakN5/reg-1.bag) (it is part of [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset)).
 
-Please change branch to [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-LIO-EKF-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1) for quick experiment.  
+File 'reg-1.bag' is an input for further calculations.
+It should be located in '~/hdmapping-benchmark/data'.
 
-## Example Dataset: 
 
-Download the dataset from [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset/)  
-
-## Intended use 
-
-This small toolset allows to integrate SLAM solution provided by [lio-ekf](https://github.com/YibinWu/LIO-EKF) with [HDMapping](https://github.com/MapsHD/HDMapping).
-This repository contains ROS 1 workspace that :
-  - submodule to tested revision of LIO-EKF and KISS-ICP(for building LIO-EKF)
-  - a converter that listens to topics advertised from odometry node and save data in format compatible with HDMapping.
-
-## Dependencies
-
+## Step 2 (prepare docker)
 ```shell
-sudo apt install -y nlohmann-json3-dev
-sudo apt install libgflags-dev
-sudo apt install libgoogle-glog-dev
+mkdir -p ~/hdmapping-benchmark
+cd ~/hdmapping-benchmark
+git clone https://github.com/MapsHD/benchmark-LIO-EKF-to-HDMapping.git --recursive
+cd benchmark-LIO-EKF-to-HDMapping
+git checkout Bunker-DVI-Dataset-reg-1
+docker build -t lio-ekf_noetic .
 ```
 
-## Dependecies for Sophus and Ceres
+## Step 3 (run docker, file 'reg-1.bag' should be in '~/hdmapping-benchmark/data')
 ```shell
-cd ~
-wget https://github.com/Kitware/CMake/releases/download/v3.24.0/cmake-3.24.0.tar.gz
-tar -xzf cmake-3.24.0.tar.gz
-sudo mv cmake-3.24.0 /opt
-cd /opt/cmake-3.24.0
-./bootstrap --prefix=/opt/cmake-3.24
-make -j$(nproc)
-sudo make install
-
-cd ~
-git clone https://gitlab.com/libeigen/eigen.git
-sudo mv eigen /opt
-cd /opt/eigen
-git checkout 3.4.0
-mkdir build && cd build
-/opt/cmake-3.24/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/opt/eigen-3.4
-make -j$(nproc)
-sudo make install
+cd ~/hdmapping-benchmark/benchmark-LIO-EKF-to-HDMapping
+chmod +x docker_session_run-ros1-lio-ekf.sh 
+cd ~/hdmapping-benchmark/data
+~/hdmapping-benchmark/benchmark-LIO-EKF-to-HDMapping/docker_session_run-ros1-lio-ekf.sh reg-1.bag .
 ```
 
-## Ceres and Sophus
-```shell
-cd ~
-git clone https://ceres-solver.googlesource.com/ceres-solver
-cd ceres-solver && git fetch --all --tags
-git checkout tags/2.1.0
-mkdir build && cd build
-/opt/cmake-3.24/bin/cmake .. \
-  -DEigen3_DIR=/opt/eigen-3.4/share/eigen3/cmake
-make -j$(nproc)
-sudo make install
+## Step 4 (Open and visualize data)
+Expected data should appear in ~/hdmapping-benchmark/data/output_hdmapping-lio-ekf
+Use tool [multi_view_tls_registration_step_2](https://github.com/MapsHD/HDMapping) to open session.json from ~/hdmapping-benchmark/data/output_hdmapping-lio-ekf.
 
-cd ~
-git clone https://github.com/strasdat/Sophus
-cd Sophus
-mkdir build && cd build
-/opt/cmake-3.24/bin/cmake .. \
-  -DEigen3_DIR=/opt/eigen-3.4/share/eigen3/cmake
-make -j$(nproc)
-sudo make install
-```
+You should see following data
 
-## Building
+lio_initial_poses.reg
 
-Clone the repo
-```shell
-mkdir -p /test_ws/src
-cd /test_ws/src
-git clone https://github.com/marcinmatecki/LIO-EKF-to-HDMapping.git --recursive
-cd ..
-catkin_make --cmake-args -DEigen3_DIR=/opt/eigen-3.4/share/eigen3/cmake
-```
+poses.reg
 
-## Usage - data SLAM:
+scan_lio_0.laz
 
-Prepare recorded bag with estimated odometry:
+scan_lio_1.laz
 
-In first terminal record bag:
-```shell
-rosbag record /local_map /odometry
-```
+scan_lio_2.laz
 
- start odometry:
-```shell 
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-roslaunch lio_ekf eee_01.launch 
-rosbag play {path_for_bag}
-```
+scan_lio_3.laz
 
-## Usage - conversion:
+scan_lio_4.laz
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-rosrun lio-ekf-to-hdmapping listener <recorded_bag> <output_dir>
-```
+scan_lio_5.laz
 
-## Record the bag file:
+scan_lio_6.laz
 
-```shell
-rosbag record /local_map /odometry -O {your_directory_for_the_recorded_bag}
-```
+scan_lio_7.laz
 
-## LIO-EKF Launch:
+scan_lio_8.laz
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-roslaunch lio_ekf eee_01.launch 
-rosbag play {path_for_bag}
-```
+scan_lio_9.laz
 
-## During the record (if you want to stop recording earlier) / after finishing the bag:
+session.json
 
-```shell
-In the terminal where the ros record is, interrupt the recording by CTRL+C
-Do it also in ros launch terminal by CTRL+C.
-```
+trajectory_lio_0.csv
 
-## Usage - Conversion (ROS bag to HDMapping, after recording stops):
+trajectory_lio_1.csv
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-rosrun lio-ekf-to-hdmapping listener <recorded_bag> <output_dir>
-```
+trajectory_lio_2.csv
+
+trajectory_lio_3.csv
+
+trajectory_lio_4.csv
+
+trajectory_lio_5.csv
+
+trajectory_lio_6.csv
+
+trajectory_lio_7.csv
+
+trajectory_lio_8.csv
+
+trajectory_lio_9.csv
+
+## Contact email
+januszbedkowski@gmail.com

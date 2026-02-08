@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tmux \
     libflann-dev \
     libvtk7-dev \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    mesa-utils \
     wget \
     libusb-1.0-0-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -70,10 +73,8 @@ WORKDIR /ros_ws
 
 COPY ./src ./src
 
-RUN sed -i \
-  -e 's|lidar_topic:[[:space:]]*"velodyne_points"|lidar_topic:  "/livox/pointcloud"|' \
-  -e 's|imu_topic:[[:space:]]*"imu/data"|imu_topic:  "/livox/imu"|' \
-   src/LIO-EKF/config/ntu_viral.yaml
+RUN sed -i 's|/os1_cloud_node1/points|/livox/pointcloud|g' src/LIO-EKF/config/ntu_viral.yaml \
+ && sed -i 's|/os1_cloud_node1/imu|/livox/imu|g' src/LIO-EKF/config/ntu_viral.yaml
 
 RUN sed -i '/include(kiss-icp.cmake)/d' src/LIO-EKF/CMakeLists.txt
 

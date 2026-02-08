@@ -1,11 +1,10 @@
 # LIO-EKF to HDMapping simlified instruction
 
 ## Step 1 (prepare data)
-Download the dataset `reg-1.bag` by clicking [link](https://cloud.cylab.be/public.php/dav/files/7PgyjbM2CBcakN5/reg-1.bag) (it is part of [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset)).
+Download the dataset `reg-1.bag` by clicking [link](https://cloud.cylab.be/public.php/dav/files/7PgyjbM2CBcakN5/reg-1.bag) (it is part of [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset)) and convert with [tool](https://github.com/MapsHD/livox_bag_aggregate) to 'reg-1.bag-pc.bag'.
 
-File 'reg-1.bag' is an input for further calculations.
+File 'reg-1.bag-pc.bag' is an input for further calculations.
 It should be located in '~/hdmapping-benchmark/data'.
-
 
 ## Step 2 (prepare docker)
 ```shell
@@ -17,12 +16,12 @@ git checkout Bunker-DVI-Dataset-reg-1
 docker build -t lio-ekf_noetic .
 ```
 
-## Step 3 (run docker, file 'reg-1.bag' should be in '~/hdmapping-benchmark/data')
+## Step 3 (run docker, file 'reg-1.bag-pc.bag' should be in '~/hdmapping-benchmark/data')
 ```shell
 cd ~/hdmapping-benchmark/benchmark-LIO-EKF-to-HDMapping
 chmod +x docker_session_run-ros1-lio-ekf.sh 
 cd ~/hdmapping-benchmark/data
-~/hdmapping-benchmark/benchmark-LIO-EKF-to-HDMapping/docker_session_run-ros1-lio-ekf.sh reg-1.bag .
+~/hdmapping-benchmark/benchmark-LIO-EKF-to-HDMapping/docker_session_run-ros1-lio-ekf.sh reg-1.bag-pc.bag .
 ```
 
 ## Step 4 (Open and visualize data)

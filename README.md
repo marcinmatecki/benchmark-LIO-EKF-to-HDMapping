@@ -1,4 +1,8 @@
-# LIO-EKF converter
+# [LIO-EKF](https://github.com/YibinWu/LIO-EKF) converter to [HDMapping](https://github.com/MapsHD/HDMapping)
+
+## Hint
+
+Please change branch to [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-Faster-LIO-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1) for quick experiment.  
 
 ## Example Dataset: 
 

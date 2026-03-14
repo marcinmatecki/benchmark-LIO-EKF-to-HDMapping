@@ -73,9 +73,6 @@ WORKDIR /ros_ws
 
 COPY ./src ./src
 
-RUN sed -i 's|/os1_cloud_node1/points|/livox/pointcloud|g' src/LIO-EKF/config/ntu_viral.yaml \
- && sed -i 's|/os1_cloud_node1/imu|/livox/imu|g' src/LIO-EKF/config/ntu_viral.yaml
-
 RUN sed -i '/include(kiss-icp.cmake)/d' src/LIO-EKF/CMakeLists.txt
 
 RUN source /opt/ros/noetic/setup.bash && \

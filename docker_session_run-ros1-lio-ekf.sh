@@ -74,7 +74,7 @@ docker run -it --rm \
     tmux send-keys -t '"$TMUX_SESSION"' '\''sleep 5
 source /opt/ros/noetic/setup.bash
 source /ros_ws/devel/setup.bash
-roslaunch lio_ekf eee_01.launch use_sim_time:=true
+roslaunch lio_ekf urbanNav20210517.launch use_sim_time:=true
 '\'' C-m
 
     # ---------- PANEL 2: rosbag record ----------
